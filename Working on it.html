@@ -1,0 +1,123 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Black Beans Sat — The Clarion Satellite Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    body {font-family: 'Roboto', sans-serif; margin: 0; background: #070617; color: #eaf2f6; padding: 20px;}
+    .title-large {font-family: 'Orbitron', monospace; font-size: 64px; font-weight: 900;}
+    .pill {background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 999px; display: inline-block; margin-top: 10px; cursor: pointer;}
+    .pill:hover {background: rgba(255,255,255,0.1);}
+    .hidden {display: none;}
+    .project-list, .photo-section, .comment-section {margin-top: 20px;}
+    .project, .photo, .comment {background: rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 8px;}
+    input, textarea {width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: none;}
+    button {margin-top: 8px; padding: 8px 12px; border-radius: 5px; border: none; background: #2be7b8; cursor: pointer;}
+    button:hover {background: #22b090;}
+    img {max-width: 200px; display: block; margin-top: 10px; border-radius: 5px;}
+    .comment strong {display: block; color: #2be7b8; margin-bottom: 4px;}
+  </style>
+</head>
+<body>
+  <div id="main-interface">
+    <h1 class="title-large">Black Beans Sat</h1>
+    <p>Live updates and news for the student-built satellite at 
+      <img src="https://marketresponse.nl/wp-content/uploads/2022/12/Best-software-for-quantitative-data-analysis.jpg" 
+     alt="Best software for quantitative data analysis" 
+     style="max-width:100%; height:auto;">
+      <span class="pill" id="clarion-pill">🏫 The Clarion — School Project</span>
+      <span class="pill" id="satellite-pill">📡 Satellite Progress</span>
+      <span class="pill" id="events-pill">📅 Upcoming Events</span>
+    </p><div class="photo-section">
+  <h3>Project Photos</h3>
+  <input type="file" id="photo-upload" accept="image/*" multiple>
+  <div id="photo-gallery"></div>
+</div>
+
+<div class="comment-section">
+  <h3>Comments</h3>
+  <input type="text" id="comment-name" placeholder="Your name">
+  <textarea id="comment-input" placeholder="Write a comment..."></textarea>
+  <button id="post-comment">Post Comment</button>
+  <div id="comment-list"></div>
+</div>
+
+  </div>  <div id="projects-interface" class="hidden">
+    <h2>The Clarion — School Project</h2>
+    <div class="project-list">
+      <div class="project"><strong>Black Beans Sat</strong><br>Progress: 70% — Integration phase.<br>
+      <img src="drive.google.com/file/d/1zz5iXBG9VCnAHUJSnySD3c4mDQqe18Y/view?usp=drivesdk" alt="A sample CubeSat in orbit" width="350" height="250" title="This is a picture of a CubeSat in LEO."><br><img src="https://marketresponse.nl/wp-content/uploads/2022/12/Best-software-for-quantitative-data-analysis.jpg" 
+     alt="Best software for quantitative data analysis" 
+     style="max-width:100%; height:auto;"></div>
+      <div class="project"><strong>Weather Balloon 2025</strong><br>Progress: 45% — Payload assembly ongoing.</div>
+      <div class="project"><strong>Solar Car Initiative</strong><br>Progress: 30% — Chassis design stage.</div>
+      <div class="project"><strong>Robotics Club Mars Rover</strong><br>Progress: 80% — Field testing phase.</div>
+    </div>
+    <button class="back-btn">⬅ Back</button>
+  </div>  <div id="satellite-interface" class="hidden">
+    <h2>Satellite Progress</h2>
+    <p>Current phase: Integration. Expected launch: 2026.</p>
+    <button class="back-btn">⬅ Back</button>
+  </div>  <div id="events-interface" class="hidden">
+    <h2>Upcoming Events</h2>
+    <ul>
+      <li>Vibration Test — Sep 12, 2025</li>
+      <li>Thermal Vacuum Test — Oct 20, 2025</li>
+      <li>Final Review — Jan 2026</li>
+    </ul>
+    <button class="back-btn">⬅ Back</button>
+  </div>  <script>
+    const pills = {
+      'clarion-pill': 'projects-interface',
+      'satellite-pill': 'satellite-interface',
+      'events-pill': 'events-interface'
+    };
+
+    for (let pillId in pills) {
+      document.getElementById(pillId).addEventListener('click', () => {
+        document.getElementById('main-interface').classList.add('hidden');
+        document.getElementById(pills[pillId]).classList.remove('hidden');
+      });
+    }
+
+    document.querySelectorAll('.back-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#projects-interface, #satellite-interface, #events-interface').forEach(div => div.classList.add('hidden'));
+        document.getElementById('main-interface').classList.remove('hidden');
+      });
+    });
+
+    // Photo upload logic (instant preview)
+    const photoGallery = document.getElementById('photo-gallery');
+    document.getElementById('photo-upload').addEventListener('change', () => {
+      photoGallery.innerHTML = '';
+      Array.from(document.getElementById('photo-upload').files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          photoGallery.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Comment section logic (with name)
+    const commentList = document.getElementById('comment-list');
+    document.getElementById('post-comment').addEventListener('click', () => {
+      const name = document.getElementById('comment-name').value.trim();
+      const commentText = document.getElementById('comment-input').value.trim();
+      if (name && commentText) {
+        const div = document.createElement('div');
+        div.className = 'comment';
+        div.innerHTML = `<strong>${name}</strong>${commentText}`;
+        commentList.appendChild(div);
+        document.getElementById('comment-name').value = '';
+        document.getElementById('comment-input').value = '';
+      }
+    });
+  </script></body>
+</html>
